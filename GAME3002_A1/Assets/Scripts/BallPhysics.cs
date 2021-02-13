@@ -15,7 +15,7 @@ public class BallPhysics : MonoBehaviour
 
     private bool m_bIsGrounded = true;
 
-    private Vector3 m_vOrigin = new Vector3 (0.0f, 0.3f, -5f);
+    private Vector3 m_vOrigin = new Vector3 (0.0f, 0.3f, -10f);
 
     private float m_fDistanceToTarget = 0f;
 
@@ -34,7 +34,7 @@ public class BallPhysics : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
         if (m_TargetDisplay != null && m_bIsGrounded)
         {
             m_TargetDisplay.transform.position = m_vTargetPos;
@@ -45,11 +45,28 @@ public class BallPhysics : MonoBehaviour
         
         transform.position = new Vector3 (m_TargetDisplay.transform.position.x, transform.position.y, transform.position.z);
 
-        if (transform.position.y <= 0.5f) m_bIsGrounded = true;
+        if (transform.position.y <= 0.5f) 
+        {
+            m_rb.isKinematic = false;
+            m_bIsGrounded = true;
+        }
+        else if (transform.position.y > 0.5f)
+        {
+            m_bIsGrounded = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.Space) && m_bIsGrounded == true)
         {
+            //m_rb.isKinematic = true;
             OnKickBall();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && m_bIsGrounded == true)
+        {
+            m_rb.isKinematic = true;
+            transform.position = m_vOrigin;
+            m_vTargetPos = new Vector3 (0.0f, 3.0f, 0.0f);
+             
         }
 
     }
