@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Score
+  - NPC
+  - Obstacle
+  - Aim
   layers:
   - Default
   - TransparentFX

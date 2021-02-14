@@ -1,34 +1,37 @@
 using UnityEngine.Assertions;
 using UnityEngine;
 
+
 public class BallPhysics : MonoBehaviour
 {
     [SerializeField]
-    public Vector3 m_vTargetPos;
+    public Vector3 m_vTargetOriginalPos = new Vector3 (0.0f, 1.5f, 0.0f);
     [SerializeField]
     private Vector3 m_vInitialVel;
     [SerializeField]
-   // private bool m_bDebugKickBall = false;
 
-    private Rigidbody m_rb = null;
-    public GameObject m_TargetDisplay = null;
+    public Rigidbody m_rb = null;
+    public AimBehavior m_TargetDisplay;
 
     private bool m_bIsGrounded = true;
 
-    private Vector3 m_vOrigin = new Vector3 (0.0f, 0.3f, -10f);
-
     private float m_fDistanceToTarget = 0f;
+
+    public ScoreUI score;
 
     private Vector3 vDebugHeading;
 
     // Start is called before the first frame update
     void Start()
     {
+        m_TargetDisplay = GameObject.FindGameObjectWithTag("Aim").GetComponent<AimBehavior>();
+        score = GameObject.FindGameObjectWithTag("Score").GetComponent<ScoreUI>();
+
         m_rb = GetComponent<Rigidbody>();
         Assert.IsNotNull(m_rb, "Houston, we've got a problem here! No Rigidbody attached");
 
-        CreateTargetDisplay();
-        m_fDistanceToTarget = (m_TargetDisplay.transform.position - transform.position).magnitude;
+        //CreateTargetDisplay();
+        m_fDistanceToTarget = (m_TargetDisplay.getPosition() - transform.position).magnitude;
     }
 
     // Update is called once per frame
@@ -37,13 +40,8 @@ public class BallPhysics : MonoBehaviour
         
         if (m_TargetDisplay != null && m_bIsGrounded)
         {
-            m_TargetDisplay.transform.position = m_vTargetPos;
-            vDebugHeading = m_vTargetPos - transform.position;
+            vDebugHeading = m_TargetDisplay.getPosition() - transform.position;
         }
-
-        UpdateTargetDisplay();
-        
-        transform.position = new Vector3 (m_TargetDisplay.transform.position.x, transform.position.y, transform.position.z);
 
         if (transform.position.y <= 0.5f) 
         {
@@ -55,54 +53,29 @@ public class BallPhysics : MonoBehaviour
             m_bIsGrounded = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && m_bIsGrounded == true)
+        if (transform.position.z == -5.0f)
         {
-            //m_rb.isKinematic = true;
-            OnKickBall();
+            m_TargetDisplay.moveTarget();
+
+            if (Input.GetKeyDown(KeyCode.Space) && m_bIsGrounded == true)
+            {
+                OnKickBall();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.R) && m_bIsGrounded == true)
         {
-            m_rb.isKinematic = true;
-            transform.position = m_vOrigin;
-            m_vTargetPos = new Vector3 (0.0f, 3.0f, 0.0f);
-             
+            Reset();
         }
-
+        
+        transform.position = new Vector3 (m_TargetDisplay.getPosition().x, transform.position.y, transform.position.z);
     }
 
-    private void CreateTargetDisplay()
+    private void Reset() 
     {
-        m_TargetDisplay = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        m_TargetDisplay.transform.position = Vector3.zero;
-        m_TargetDisplay.transform.localScale = new Vector3(1.0f, 0.1f, 1.0f);
-        m_TargetDisplay.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-
-        m_TargetDisplay.GetComponent<Renderer>().material.color = Color.red;
-        m_TargetDisplay.GetComponent<Collider>().enabled = false;
-    }
-
-    private void UpdateTargetDisplay()
-    {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            m_TargetDisplay.transform.position = new Vector3 (m_vTargetPos.x, m_vTargetPos.y+=0.1f, m_vTargetPos.z);
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            m_TargetDisplay.transform.position = new Vector3 (m_vTargetPos.x-=0.1f, m_vTargetPos.y, m_vTargetPos.z);
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            m_TargetDisplay.transform.position = new Vector3 (m_vTargetPos.x, m_vTargetPos.y-=0.1f, m_vTargetPos.z);
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            m_TargetDisplay.transform.position = new Vector3 (m_vTargetPos.x+=0.1f, m_vTargetPos.y, m_vTargetPos.z);
-        }
+        m_rb.isKinematic = true;
+        transform.position = new Vector3 (0.0f, 0.25f, -5.0f);
+        m_TargetDisplay.setPosition(m_vTargetOriginalPos);
     }
 
     public void OnKickBall()
@@ -116,7 +89,7 @@ public class BallPhysics : MonoBehaviour
         // Vy = V * sin(theta)
         // Vz = V * cos(theta)
 
-        float fMaxHeight = m_TargetDisplay.transform.position.y;
+        float fMaxHeight = m_TargetDisplay.getPosition().y;
         float fRange = (m_fDistanceToTarget * 2);
         float fTheta = Mathf.Atan((4 * fMaxHeight) / (fRange));
 
@@ -126,8 +99,6 @@ public class BallPhysics : MonoBehaviour
         m_vInitialVel.z = fInitVelMag * Mathf.Cos(fTheta);
 
         m_rb.velocity = m_vInitialVel;
-
-
     }
 
     private void OnDrawGizmos()
@@ -135,4 +106,17 @@ public class BallPhysics : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position + vDebugHeading, transform.position);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        score.AddScore(1);
+
+        if (score.getScore() == 3)
+        {
+            
+            score.LevelChange("Level2");
+        }
+    }
+
+    
 }

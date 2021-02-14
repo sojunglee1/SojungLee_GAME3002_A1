@@ -18,8 +18,10 @@ public class GoalieBehavior : MonoBehaviour
     {
         m_fXPosition += step;
 
-        if (m_fXPosition > 3.5f || m_fXPosition < -3.5f) step *= -1;
+        if (m_fXPosition > 2.5f || m_fXPosition < -2.5f) step *= -1;
 
         transform.position = new Vector3 (m_fXPosition,  transform.position.y,  transform.position.z);
+
+        //Debug.Log (transform.position);
     }
 }
