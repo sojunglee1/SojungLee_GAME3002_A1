@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class MainMenuButtonScript : MonoBehaviour
+public class ButtonScript : MonoBehaviour
 {
     public Button yourButton;
 
@@ -17,5 +17,10 @@ public class MainMenuButtonScript : MonoBehaviour
     public void goToNextScene(string nextScene)
     {
         SceneManager.LoadScene(nextScene);
+    }
+
+    public void quitGame()
+    {
+        Application.Quit();
     }
 }
