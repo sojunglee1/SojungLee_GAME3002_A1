@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InstructionsUI : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class InstructionsUI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape)) {
             isShowing = !isShowing;
             instructions.SetActive(isShowing);
+        }
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }

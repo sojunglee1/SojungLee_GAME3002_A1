@@ -851,16 +851,20 @@ MonoBehaviour:
     Key ''ESC'' - Show
     Instructions
 
-
-    On Level 3: You can unlock a special ability to move the Aim
-    along the Z Axis!
+    Key ''BACKSPACE'' - Go back to the main menu
 
 
-    Key ''Q'' - Move the Aim closer to the ball ... rather
-    towards the front! (- Z Axis)
 
-    Key ''E'' - Move the Aim further away from
-    the ball ... rather towards the back (+ Z Axis)'
+    On Level
+    3: You can unlock a special ability to move the Aim along the Z Axis!
+
+
+    Key
+    ''Q'' - Move the Aim closer to the ball ... rather towards the front! (- Z Axis)
+
+    Key
+    ''E'' - Move the Aim further away from the ball ... rather towards the back (+
+    Z Axis)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -887,7 +891,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.7
+  m_fontSize: 26.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1194,7 +1198,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -15, y: -434}
-  m_SizeDelta: {x: 500, y: 100}
+  m_SizeDelta: {x: 400, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2016895412
 MonoBehaviour:
