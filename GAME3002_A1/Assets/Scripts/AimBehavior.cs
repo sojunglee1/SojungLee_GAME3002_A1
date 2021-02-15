@@ -55,7 +55,10 @@ public class AimBehavior : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.W))
         {  
+            if (transform.position.y < 3)
+            {
                 transform.position = new Vector3 (m_vTargetPos.x, m_vTargetPos.y+=0.1f, m_vTargetPos.z);
+            }    
         }
 
         if (Input.GetKeyDown(KeyCode.A))
