@@ -5,10 +5,12 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement; 
 
+[System.Serializable]
 public class TargetsLeftUI : MonoBehaviour
 {
+    [SerializeField]
     private int TargetsLeft = 6;
-
+    [SerializeField]
     public TextMeshPro m_MyText;
 
     // Start is called before the first frame update
@@ -20,7 +22,7 @@ public class TargetsLeftUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        m_MyText.text = "Score: " + TargetsLeft;
+        m_MyText.text = "Balls Left: " + TargetsLeft;
     }
 
     public void setTargetsLeft(int value)

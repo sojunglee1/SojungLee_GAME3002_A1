@@ -8,7 +8,7 @@ public class GoalBehavior : MonoBehaviour
 {
     private GoalBehavior goal3, goal4, goal5;
     public BallPhysics ball;
-    public TargetsLeftUI score;
+    public TargetsLeftUI targetsLeft;
 
     private Scene scene;
 
@@ -16,7 +16,7 @@ public class GoalBehavior : MonoBehaviour
     void Start()
     {
         ball = GameObject.FindGameObjectWithTag("Player").GetComponent<BallPhysics>();
-        score = GameObject.FindGameObjectWithTag("Score").GetComponent<TargetsLeftUI>();
+        targetsLeft = GameObject.FindGameObjectWithTag("Score").GetComponent<TargetsLeftUI>();
 
         scene = SceneManager.GetActiveScene();
 
@@ -27,11 +27,11 @@ public class GoalBehavior : MonoBehaviour
     {
         if (scene.name == "Level2")
         {
-            if (transform.position.y < 1.0f && score.getTargetsLeft() > 3)
+            if (transform.position.y < 1.0f && targetsLeft.getTargetsLeft() > 3)
             {
                 this.GetComponent<Collider>().enabled = false;
             }
-            else if (transform.position.y < 1.0f && score.getTargetsLeft() <= 3)
+            else if (transform.position.y < 1.0f && targetsLeft.getTargetsLeft() <= 3)
             {
                 this.GetComponent<Collider>().enabled = true;
             }

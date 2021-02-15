@@ -7,16 +7,14 @@ using UnityEngine.SceneManagement;
 public class MainMenuButtonScript : MonoBehaviour
 {
     public Button yourButton;
-    public string nextScene;
 
     // Start is called before the first frame update
     void Start()
     {
         Button btn = yourButton.GetComponent<Button>();
-        btn.onClick.AddListener(TaskOnClick);
     }
 
-    void TaskOnClick()
+    public void goToNextScene(string nextScene)
     {
         SceneManager.LoadScene(nextScene);
     }

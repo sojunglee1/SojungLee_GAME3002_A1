@@ -3,7 +3,7 @@ using UnityEngine.Assertions;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
-
+[System.Serializable]
 public class BallPhysics : MonoBehaviour
 {
     [SerializeField]
@@ -13,23 +13,23 @@ public class BallPhysics : MonoBehaviour
     private Vector3 m_vInitialVel;
     [SerializeField]
     public Rigidbody m_rb = null;
+    [SerializeField]
     public AimBehavior m_AimDisplay;
     private bool m_bIsGrounded = true;
-    public TargetsLeftUI score;
+
+    [SerializeField]
+    private TargetsLeftUI targetsLeft;
     private Vector3 vDebugHeading;
-
-
-
     Scene scene;
-
 
     // Start is called before the first frame update
     void Start()
     {
+        targetsLeft = GameObject.FindGameObjectWithTag("Score").GetComponent<TargetsLeftUI>();
         scene = SceneManager.GetActiveScene();
         
         m_AimDisplay = GameObject.FindGameObjectWithTag("Aim").GetComponent<AimBehavior>();
-        score = GameObject.FindGameObjectWithTag("Score").GetComponent<TargetsLeftUI>();
+        
 
         m_rb = GetComponent<Rigidbody>();
         Assert.IsNotNull(m_rb, "Houston, we've got a problem here! No Rigidbody attached");
@@ -113,7 +113,7 @@ public class BallPhysics : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        score.setTargetsLeft(1);
+        targetsLeft.setTargetsLeft(1);
 
         setLevel(0, "Level1", "Level2");
         setLevel(0, "Level2", "Level3");
@@ -135,9 +135,9 @@ public class BallPhysics : MonoBehaviour
 
     private void setLevel(int targets, string currentLevel, string nextLevel)
     {
-        if (score.getTargetsLeft() == targets && scene.name == currentLevel)
+        if (targetsLeft.getTargetsLeft() == targets && scene.name == currentLevel)
         {
-            score.LevelChange(nextLevel);
+            targetsLeft.LevelChange(nextLevel);
         }
     }
     
