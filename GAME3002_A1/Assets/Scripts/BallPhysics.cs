@@ -1,61 +1,63 @@
+using System.Runtime.CompilerServices;
 using UnityEngine.Assertions;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 
 public class BallPhysics : MonoBehaviour
 {
     [SerializeField]
-    public Vector3 m_vTargetOriginalPos = new Vector3 (0.0f, 1.5f, 0.0f);
+    public Vector3 m_vAimOriginalPos;
+    public Vector3 m_vOriginalPos;
     [SerializeField]
     private Vector3 m_vInitialVel;
     [SerializeField]
-
     public Rigidbody m_rb = null;
-    public AimBehavior m_TargetDisplay;
-
+    public AimBehavior m_AimDisplay;
     private bool m_bIsGrounded = true;
-
-    private float m_fDistanceToTarget = 0f;
-
-    public ScoreUI score;
-
+    public TargetsLeftUI score;
     private Vector3 vDebugHeading;
+
+
+
+    Scene scene;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        m_TargetDisplay = GameObject.FindGameObjectWithTag("Aim").GetComponent<AimBehavior>();
-        score = GameObject.FindGameObjectWithTag("Score").GetComponent<ScoreUI>();
+        scene = SceneManager.GetActiveScene();
+        
+        m_AimDisplay = GameObject.FindGameObjectWithTag("Aim").GetComponent<AimBehavior>();
+        score = GameObject.FindGameObjectWithTag("Score").GetComponent<TargetsLeftUI>();
 
         m_rb = GetComponent<Rigidbody>();
         Assert.IsNotNull(m_rb, "Houston, we've got a problem here! No Rigidbody attached");
 
-        //CreateTargetDisplay();
-        m_fDistanceToTarget = (m_TargetDisplay.getPosition() - transform.position).magnitude;
+        m_vAimOriginalPos = m_AimDisplay.getPosition();
+        m_vOriginalPos = transform.position;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        if (m_TargetDisplay != null && m_bIsGrounded)
+        if (m_AimDisplay != null && m_bIsGrounded)
         {
-            vDebugHeading = m_TargetDisplay.getPosition() - transform.position;
+            vDebugHeading = m_AimDisplay.getPosition() - transform.position;
+        }
+        if (scene.name == "Level1" || scene.name == "Level2")
+        {
+            setGroundLevel(0.5f);
+        }
+        else if (scene.name == "Level3")
+        {
+            setGroundLevel(1.3f);
         }
 
-        if (transform.position.y <= 0.5f) 
+        if (transform.position.z <-2.0f)
         {
-            m_rb.isKinematic = false;
-            m_bIsGrounded = true;
-        }
-        else if (transform.position.y > 0.5f)
-        {
-            m_bIsGrounded = false;
-        }
-
-        if (transform.position.z == -5.0f)
-        {
-            m_TargetDisplay.moveTarget();
+            m_AimDisplay.moveTarget();
 
             if (Input.GetKeyDown(KeyCode.Space) && m_bIsGrounded == true)
             {
@@ -63,19 +65,21 @@ public class BallPhysics : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R) && m_bIsGrounded == true)
+        if (Input.GetKeyDown(KeyCode.R) && (transform.position.z > 5.0f || m_bIsGrounded == true))
         {
             Reset();
         }
         
-        transform.position = new Vector3 (m_TargetDisplay.getPosition().x, transform.position.y, transform.position.z);
+        transform.position = new Vector3 (m_AimDisplay.getPosition().x, transform.position.y, transform.position.z);
     }
 
     private void Reset() 
     {
         m_rb.isKinematic = true;
-        transform.position = new Vector3 (0.0f, 0.25f, -5.0f);
-        m_TargetDisplay.setPosition(m_vTargetOriginalPos);
+
+        m_AimDisplay.setPosition(m_vAimOriginalPos);
+        
+        transform.position = m_vOriginalPos;
     }
 
     public void OnKickBall()
@@ -89,10 +93,10 @@ public class BallPhysics : MonoBehaviour
         // Vy = V * sin(theta)
         // Vz = V * cos(theta)
 
-        float fMaxHeight = m_TargetDisplay.getPosition().y;
-        float fRange = (m_fDistanceToTarget * 2);
+        float fMaxHeight = m_AimDisplay.getPosition().y;
+        float fRange = ((m_AimDisplay.getPosition().z - transform.position.z) * 2);
         float fTheta = Mathf.Atan((4 * fMaxHeight) / (fRange));
-
+ 
         float fInitVelMag = Mathf.Sqrt((2 * Mathf.Abs(Physics.gravity.y) * fMaxHeight)) / Mathf.Sin(fTheta);
 
         m_vInitialVel.y = fInitVelMag * Mathf.Sin(fTheta);
@@ -109,14 +113,32 @@ public class BallPhysics : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        score.AddScore(1);
+        score.setTargetsLeft(1);
 
-        if (score.getScore() == 3)
+        setLevel(0, "Level1", "Level2");
+        setLevel(0, "Level2", "Level3");
+        setLevel(0, "Level3", "GameWon");
+    }
+
+    private void setGroundLevel(float number)
+    {
+        if (transform.position.y <= number) 
         {
-            
-            score.LevelChange("Level2");
+            m_rb.isKinematic = false;
+            m_bIsGrounded = true;
+        }
+        else if (transform.position.y > number)
+        {
+            m_bIsGrounded = false;
         }
     }
 
+    private void setLevel(int targets, string currentLevel, string nextLevel)
+    {
+        if (score.getTargetsLeft() == targets && scene.name == currentLevel)
+        {
+            score.LevelChange(nextLevel);
+        }
+    }
     
 }

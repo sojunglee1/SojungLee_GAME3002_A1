@@ -8,6 +8,8 @@ TagManager:
   - NPC
   - Obstacle
   - Aim
+  - Goal
+  - Bottom Goal
   layers:
   - Default
   - TransparentFX

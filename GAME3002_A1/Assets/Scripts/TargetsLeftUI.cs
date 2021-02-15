@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement; 
 
-public class ScoreUI : MonoBehaviour
+public class TargetsLeftUI : MonoBehaviour
 {
-    public int score = 0;
+    private int TargetsLeft = 6;
 
     public TextMeshPro m_MyText;
 
@@ -20,12 +20,12 @@ public class ScoreUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        m_MyText.text = "Score: " + score;
+        m_MyText.text = "Score: " + TargetsLeft;
     }
 
-    public void AddScore(int value)
+    public void setTargetsLeft(int value)
     {
-        score += value;
+        TargetsLeft -= value;
     }
 
     public void LevelChange(string gameSceneName)
@@ -33,8 +33,8 @@ public class ScoreUI : MonoBehaviour
         SceneManager.LoadScene(gameSceneName);
     }
 
-    public int getScore()
+    public int getTargetsLeft()
     {
-        return score;
+        return TargetsLeft;
     }
 }
